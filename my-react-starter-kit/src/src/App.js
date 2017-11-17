@@ -4,7 +4,7 @@ import Header from './components/common/Header'
 import RegisterPage from './components/Auth/RegisterPage'
 import LoginPage from './components/Auth/LoginPage'
 import HomePage from './components/HomePage/HomePage'
-import { isAuthed } from './utils/auth'
+import { isAuthed, destroySession } from './utils/auth'
 
 class App extends Component {
   constructor (props) {
@@ -14,16 +14,11 @@ class App extends Component {
   }
 
   onLogout () {
-    localStorage.clear()
+    destroySession()
     this.props.history.push('/')
   }
 
   render () {
-
-    console.log('isAuthed: ', isAuthed())
-
-    console.log('---')
-
     return (
       <div className="App">
         <Header loggedIn={isAuthed()} onLogout={this.onLogout}/>
