@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Input from '../common/Input'
 import { login } from '../../api/remote'
-import { saveSession } from '../../utils/auth'
+import { saveSession, isAuthed } from '../../utils/auth'
 
 export default class LoginPage extends Component {
   constructor (props) {
@@ -14,6 +14,12 @@ export default class LoginPage extends Component {
 
     this.onChangeHandler = this.onChangeHandler.bind(this)
     this.onSubmitHandler = this.onSubmitHandler.bind(this)
+  }
+
+  componentDidMount () {
+    if (isAuthed()) {
+      this.props.history.push('/')
+    }
   }
 
   onChangeHandler (e) {

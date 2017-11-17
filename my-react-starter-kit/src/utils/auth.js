@@ -4,6 +4,10 @@ const saveSession = data => {
   localStorage.setItem('username', data.user.name)
 }
 
+const destroySession = () => {
+  localStorage.clear()
+}
+
 const isAuthed = () => {
   return localStorage.getItem('authtoken') !== null
 }
@@ -26,4 +30,4 @@ const isAuthor = record => {
   return record._acl.creator === localStorage.getItem('email')
 }
 
-export { saveSession, isAuthed, getUsername, getAuthToken, isAuthor }
+export { saveSession, destroySession, isAuthed, getUsername, getAuthToken, isAuthor }

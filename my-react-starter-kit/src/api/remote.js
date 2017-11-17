@@ -1,8 +1,9 @@
 import { displayError, displaySuccess } from '../utils/helpers'
+import { isAuthed, getAuthToken } from '../utils/auth'
 
 const host = 'http://localhost:5000/'
 
-function displayServerResponse (res) {
+function _displayServerResponse (res) {
   if (!res.success) {
     displayError(res)
   }
@@ -11,29 +12,48 @@ function displayServerResponse (res) {
   }
 }
 
-async function remoteCall (payload, endpoint, method = 'POST') {
+async function _remoteCall (payload, endpoint, method = 'POST') {
   const headers = {
     'Content-Type': 'application/json'
   }
+  if (isAuthed) {
+    headers['Authorization'] = 'bearer ' + getAuthToken()
+  }
 
-  const res = await fetch(host + endpoint, {
+  const options = {
     method,
-    headers,
-    body: JSON.stringify(payload)
-  })
+    headers
+  }
+  if (payload) {
+    options.body = JSON.stringify(payload)
+  }
+
+  const res = await fetch(host + endpoint, options)
 
   const json = await res.json()
-  displayServerResponse(json)
+  _displayServerResponse(json)
 
   return json
 }
 
+async function _remotePost (payload, endpoint) {
+  return await _remoteCall(payload, endpoint, 'POST')
+}
+
+async function _remoteGet (endpoint) {
+  return await _remoteCall(null, endpoint, 'GET')
+}
+
+async function _remoteDelete (endpoint) {
+  return await _remoteCall(null, endpoint, 'DELETE')
+}
+
 async function register (name, email, password) {
-  return await remoteCall({name, email, password}, 'auth/signup')
+  return await _remotePost({name, email, password}, 'auth/signup')
 }
 
 async function login (email, password) {
-  return await remoteCall({email, password}, 'auth/login')
+  return await _remotePost({email, password}, 'auth/login')
 }
 
 export { register, login }
