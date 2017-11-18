@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Input from '../common/Input'
 import { register, login } from '../../api/remote'
 import { saveSession, isAuthed } from '../../utils/auth'
+import Preloader from '../common/Preloader/Preloader'
 
 export default class RegisterPage extends Component {
   constructor (props) {
@@ -11,7 +12,8 @@ export default class RegisterPage extends Component {
       name: '',
       email: '',
       password: '',
-      repeat: ''
+      repeat: '',
+      loading: false
     }
 
     this.onChangeHandler = this.onChangeHandler.bind(this)
@@ -30,7 +32,9 @@ export default class RegisterPage extends Component {
 
   async onSubmitHandler (e) {
     e.preventDefault()
+    this.setState({loading: true})
     let res = await register(this.state.name, this.state.email, this.state.password)
+    this.setState({loading: false})
     if (res.success) {
       res = await login(this.state.email, this.state.password)
       if (res.success) {
@@ -43,6 +47,7 @@ export default class RegisterPage extends Component {
   render () {
     return (
       <div className="container">
+        <Preloader loading={this.state.loading}/>
         <h1>Register</h1>
         <form onSubmit={this.onSubmitHandler}>
           <Input
