@@ -27,8 +27,9 @@ const displayError = res => {
   if (typeof res === 'string') {
     toastr.error(res)
   } else if (typeof res.message !== 'undefined') {
-    const errors = Object.keys(res.errors).map(k => res.errors[k])
-    toastr.error(typeof errors[0] !== 'undefined' ? errors[0] : res.message)
+    console.log(res.errors)
+    const errors = (res.errors) ? Object.keys(res.errors).map(k => res.errors[k]) : []
+    toastr.error(errors.length ? errors[0] : res.message)
   }
 }
 
