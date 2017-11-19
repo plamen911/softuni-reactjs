@@ -27,8 +27,13 @@ async function _remoteCall (payload, endpoint, method = 'POST') {
   if (payload) {
     options.body = JSON.stringify(payload)
   }
-
-  const res = await fetch(host + endpoint, options)
+  let res
+  try {
+    res = await fetch(host + endpoint, options)
+  } catch (e) {
+    displayError('Network Error: ' + e.message)
+    return {success: false}
+  }
 
   const json = await res.json()
   _displayServerResponse(json)
